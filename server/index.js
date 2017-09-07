@@ -9,17 +9,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post('/api/login', (req, res) => {
-	// if(req.body.username == 'admin' && req.body.password == '123456') {
-	// 	res.json({
-	// 		errno: 1,
-	// 		msg: '登陆成功'
-	// 	})
-	// } else {
-	// 	res.json({
-	// 		errno: 0,
-	// 		msg: '登录失败'
-	// 	})
-	// }
 	User.find({username: req.body.username, userpwd: req.body.password}, (err, res_1) => {
 		if(err) {
 			res.json({
@@ -40,9 +29,35 @@ app.post('/api/login', (req, res) => {
 			})
 		}
 	})
-	// res.on(err, err => {
-	// 	console.log(err)
-	// })
+})
+
+app.post('/api/register', (req, res) => {
+	User.find({username: req.body.username}, (err, user_arr) => {
+		if(user_arr.length == 0) {
+			let user = new User({
+				username: req.body.username,
+				userpwd: req.body.password
+			});
+			user.save((save_err, save_res) => {
+				if(save_res.username == req.body.username) {
+					res.json({
+						errno: 1,
+						msg: '注册成功'
+					})
+				} else {
+					res.json({
+						errno: 0,
+						msg: '注册失败'
+					})
+				}
+			})
+		} else {
+			res.json({
+				errno: 0,
+				msg: '注册失败，该用户已存在'
+			})
+		}
+	})
 })
 
 app.listen(port, () => {

@@ -12,7 +12,7 @@
 			<el-button type="primary" style="width: 100%" @click="submitForm('logForm')">登录</el-button>
 		</el-form-item>
 		<el-form-item style="width:100%">
-			<router-link to="{ path: '/register' }">注册账号</router-link>
+			<router-link class="register-link" to="/register">注册账号</router-link>
 			<!-- <el-button type="default" style="width:100%" @click="$router.push({path: '/register'})">注册</el-button> -->
 		</el-form-item>
 	</el-form>
@@ -32,7 +32,7 @@
 						{ required: true, message: '请输入账号', trigger: 'blur' }
 					],
 					checkPass: [
-						{ required: false, message: '请输入密码', trigger: 'blur'}
+						{ required: true, message: '请输入密码', trigger: 'blur'}
 					]
 				},
 				checked: true
@@ -88,6 +88,9 @@
     }
     .remember {
       margin: 0px 0px 35px 0px;
+    }
+    .register-link {
+    	float: right;
     }
   }
 </style>
