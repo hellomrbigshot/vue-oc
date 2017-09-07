@@ -12,7 +12,8 @@
 			<el-button type="primary" style="width: 100%" @click="submitForm('logForm')">登录</el-button>
 		</el-form-item>
 		<el-form-item style="width:100%">
-			<el-button type="default" style="width:100%" @click="resetForm('logForm')">重置</el-button>
+			<router-link to="{ path: '/register' }">注册账号</router-link>
+			<!-- <el-button type="default" style="width:100%" @click="$router.push({path: '/register'})">注册</el-button> -->
 		</el-form-item>
 	</el-form>
 </template>
@@ -76,7 +77,7 @@
 	    background-clip: padding-box;
 	    margin-bottom: 20px;
 	    background-color: #F9FAFC;
-	    margin: 180px auto;
+	    margin: 80px auto;
 	    border: 2px solid #8492A6;
 	    width: 350px;
 	    padding: 35px 35px 15px 35px;
