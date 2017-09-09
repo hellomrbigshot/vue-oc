@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/pages/Login.vue'
 import Register from '@/pages/Register.vue'
 import NotFound from '@/pages/404.vue'
+import AccountSetting from '@/pages/AccountSetting.vue'
 import Main from '@/pages/Main.vue'
 import Home from '@/pages/Home.vue'
 import List from '@/pages/nav1/List.vue'
@@ -45,7 +46,13 @@ export default new Router({
 	    		path: '/list',
 	    		component: List,
 	    		name: '用户列表'
-	    	}
+	    	},
+        {
+          path: '/accountsetting',
+          component: AccountSetting,
+          name: '信息设置',
+          // hidden: true
+        },
     	]
     },
     {

@@ -11,7 +11,7 @@
 			        {{ login_user }}
 			      </span>
 			      <el-dropdown-menu slot="dropdown" >
-			        <el-dropdown-item @click.native="">信息设置</el-dropdown-item>
+			        <el-dropdown-item @click.native="accountsetting">信息设置</el-dropdown-item>
 			        <el-dropdown-item divided @click.native="loginout">退出登录</el-dropdown-item>
 			      </el-dropdown-menu>
 			    </el-dropdown>
@@ -72,6 +72,9 @@
 					sessionStorage.removeItem('oc_user');
 					_this.$router.push('/login');
 				}).catch(() => {})
+			},
+			accountsetting() {
+				this.$router.push({path: '/accountsetting'})
 			}
 		}
 	})
