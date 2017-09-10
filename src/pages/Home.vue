@@ -135,6 +135,7 @@
 				.content-wrapper {
 					background-color: #fff;
 					box-sizing: border-box;
+					padding: 20px
 				}
 			}
 		}
