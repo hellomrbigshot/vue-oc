@@ -51,7 +51,7 @@ export default new Router({
           path: '/accountsetting',
           component: AccountSetting,
           name: '信息设置',
-          // hidden: true
+          hidden: true
         },
     	]
     },
