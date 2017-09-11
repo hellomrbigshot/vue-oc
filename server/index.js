@@ -27,7 +27,25 @@ app.post('/api/login', (req, res) => {
 		} else {
 			res.json({
 				errno: 1,
-				msg: '登陆成功'
+				msg: '登陆成功',
+				user_id: res_1[0]._id
+			})
+		}
+	})
+})
+app.get('/api/getAccountInfo', (req, res) => {
+	let id = req.query.user_id;
+	User.find({_id: id}, (err, user_arr) => {
+		if(user_arr.length) {
+			res.json({
+				errno: 1,
+				msg: '获取信息成功',
+				user_info: user_arr[0]
+			})
+		} else {
+			res.json({
+				errno: 0,
+				msg: '暂无该用户信息'
 			})
 		}
 	})

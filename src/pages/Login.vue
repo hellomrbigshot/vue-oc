@@ -47,6 +47,7 @@
 		            	this.logining = false;
 		            	let {data, status} = response;
 		            	if(data.errno == '1') {
+		            		loginParams.userid = data.user_id;
 		            		sessionStorage.setItem('oc_user', JSON.stringify(loginParams));
 		            		this.$router.push({path: '/main'})
 		            	} else {
