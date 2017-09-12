@@ -10,6 +10,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static(path.join(__dirname, 'public')));
+// 登录接口
 app.post('/api/login', (req, res) => {
 	User.find({username: req.body.username, password: req.body.password}, (err, res_1) => {
 		if(err) {
@@ -33,6 +34,7 @@ app.post('/api/login', (req, res) => {
 		}
 	})
 })
+// 获取账号信息接口
 app.get('/api/getAccountInfo', (req, res) => {
 	let id = req.query.user_id;
 	User.find({_id: id}, (err, user_arr) => {
@@ -50,7 +52,7 @@ app.get('/api/getAccountInfo', (req, res) => {
 		}
 	})
 })
-
+// 注册接口
 app.post('/api/register', (req, res) => {
 	User.find({username: req.body.username}).exec((err, user_arr) => {
 		if(user_arr.length == 0) {
@@ -80,7 +82,23 @@ app.post('/api/register', (req, res) => {
 		}
 	})
 })
-
+// 编辑登录信息接口
+app.post('/api/updateAccountInfo', (req, res) => {
+	let update_obj = {};
+	User.find({_id: req.query.user_id}, res.body, function (err) {
+		if (err) {
+			res.json({
+				errno: 0,
+				msg: '编辑失败'+err
+			})
+			return false;
+		}
+		res.json({
+			errno: 1,
+			msg: '编辑成功'
+		})
+	})
+})
 app.listen(port, () => {
 	console.log(`success listening ${port}`)
 })

@@ -2,12 +2,13 @@
 	<el-form :model="accountForm" :rules="rules" ref="accountForm" label-position="left" label-width="80px" style="width: 500px">
 		<el-form-item>
 			<!-- <el-input type="text" v-model="accountForm.account" disabled></el-input> -->
-			{{ accountForm.account }} 你好，请完善你的个人信息
+			你好 {{ accountForm.username }}，请完善你的个人信息
 		</el-form-item>
 		<el-form-item style="width:100%" label="性别">
 			<el-radio-group v-model="accountForm.sex">
 			    <el-radio label="male">male</el-radio>
 			    <el-radio label="female">female</el-radio>
+			    <el-radio label="other">unknown</el-radio>
 			  </el-radio-group>
 		</el-form-item>
 		<el-form-item style="width:100%" label="生日">
@@ -24,8 +25,8 @@
 		<el-form-item prop="oldPassword" label="原密码">
 			<el-input type="password" auto-complete="off" v-model="accountForm.oldPassword"></el-input>
 		</el-form-item>
-		<el-form-item prop="password" label="密码">
-			<el-input type="password" auto-complete="off" v-model="accountForm.password"></el-input>
+		<el-form-item prop="newPassword" label="密码">
+			<el-input type="password" auto-complete="off" v-model="accountForm.newPassword"></el-input>
 		</el-form-item>
 		<el-form-item prop="repeatPass" label="确认密码">
 			<el-input type="password" auto-complete="off" v-model="accountForm.repeatPass"></el-input>
@@ -39,7 +40,7 @@
 	export default {
 		data () {
 			var validateOldPassword = (rule, value, callback) => {
-				if (value === '' && this.accountForm.password !== '') {
+				if (value === '' && this.accountForm.newPassword !== '') {
 					callback(new Error('请输入原密码'));
 		          	return false;
 				}
@@ -48,26 +49,30 @@
 		          	return false;
 				}
 				if (this.accountForm.password !== '') {
-		            this.$refs.accountForm.validateField('password');
+		            this.$refs.accountForm.validateField('newPassword');
 		        }
 		        callback();
 			};
-			var validatePass = (rule, value, callback) => {
+			var validateNewPass = (rule, value, callback) => {
 		        if (value === '' && this.accountForm.repeatPass !== '') {
 		          callback(new Error('请输入密码'));
 		          return false;
 		        } 
+		        if (value == this.oldAccountInfo.password) {
+		        	callback(new Error('新密码不能与原密码一致'));
+		          return false;
+		        }  
 		        if (this.accountForm.repeatPass !== '') {
 		            this.$refs.accountForm.validateField('repeatPass');
-		        }   
+		        }
 		        callback();
 		    };
-			var validatePass2 = (rule, value, callback) => {
-		        if (value === '' && this.accountForm.password) {
+			var validateRepeatPass = (rule, value, callback) => {
+		        if (value === '' && this.accountForm.newPassword) {
 		          callback(new Error('请再次输入密码'));
 		          return false;
 		        }
-		        if (value !== this.accountForm.password) {
+		        if (value !== this.accountForm.newPassword) {
 		          callback(new Error('两次输入密码不一致!'));
 		          return false;
 		        }
@@ -75,14 +80,15 @@
 		      };
 			return {
 				accountForm: {
-					account: '',
+					username: '',
 					oldPassword: '',
-					password: '',
+					newPassword: '',
 					repeatPass: '',
 					sex: '',
 					desc: '',
 					birth: ''
 				},
+				accountId: JSON.parse(sessionStorage.getItem('oc_user')).user_id,
 				oldAccountInfo: {
 
 				},
@@ -90,11 +96,11 @@
 					account: [
 						{ required: true, message: '请输入账号', trigger: 'blur' }
 					],
-					password: [
-						{ validator: validatePass, trigger: 'blur'}
+					newPassword: [
+						{ validator: validateNewPass, trigger: 'blur'}
 					],
 					repeatPass: [
-						{ validator: validatePass2, trigger: 'blur' }
+						{ validator: validateRepeatPass, trigger: 'blur' }
 
 					],
 					oldPassword: [
@@ -108,8 +114,7 @@
 		},
 		methods: {
 			getAccountInfo() {
-				let user_id = JSON.parse(sessionStorage.getItem('oc_user')).user_id;
-				this.axios.get('/api/getAccountInfo?user_id='+user_id).then(response => {
+				this.axios.get('/api/getAccountInfo?user_id='+this.accountId).then(response => {
 					let {data, status} = response;
 					this.oldAccountInfo = JSON.parse(JSON.stringify(data.user_info));
 					this.accountForm = Object.assign(this.accountForm, data.user_info);
@@ -118,7 +123,34 @@
 			submitForm(name) {
 				this.$refs[name].validate(valid => {
 					if(valid) {
-
+						let _this = this,
+							update_obj = {},
+							arr = ['desc', 'sex', 'birth'];
+						if(this.accountForm.newPassword) {
+							update_obj.password = this.accountForm.newPassword;
+						} 
+						arr.forEach(function (ele) {
+								if(_this.accountForm[ele]) {
+								update_obj[ele] = _this.accountForm[ele];
+							}
+						})
+						this.axios.post('/api/updateAccountInfo?user_id='+this.accountId, update_obj).then(response => {
+							let {data, status} = response;
+							if(data.errno == '1') {
+								this.$notify({
+			            			title: '成功',
+			            			message: data.msg,
+			            			type: 'success'
+			            		})
+			            		this.getAccountInfo();
+			            	} else {
+			            		this.$notify({
+			            			title: '错误',
+			            			message: data.msg,
+			            			type: 'error'
+			            		})
+			            	}
+						})
 					} else {
 						this.$message.error("表单验证失败");
 					}
