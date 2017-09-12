@@ -2,7 +2,7 @@
 	<el-form :model="accountForm" :rules="rules" ref="accountForm" label-position="left" label-width="80px" style="width: 500px">
 		<el-form-item>
 			<!-- <el-input type="text" v-model="accountForm.account" disabled></el-input> -->
-			{{ accountForm.account }} 你好
+			{{ accountForm.account }} 你好，请完善你的个人信息
 		</el-form-item>
 		<el-form-item style="width:100%" label="性别">
 			<el-radio-group v-model="accountForm.sex">
@@ -110,8 +110,9 @@
 			getAccountInfo() {
 				let user_id = JSON.parse(sessionStorage.getItem('oc_user')).user_id;
 				this.axios.get('/api/getAccountInfo?user_id='+user_id).then(response => {
-					this.oldAccountInfo = JSON.parse(JSON.stringify(response.user_info));
-					// this.accountForm = Object.assign({}, response.user_info);
+					let {data, status} = response;
+					this.oldAccountInfo = JSON.parse(JSON.stringify(data.user_info));
+					this.accountForm = Object.assign(this.accountForm, data.user_info);
 				})
 			},
 			submitForm(name) {

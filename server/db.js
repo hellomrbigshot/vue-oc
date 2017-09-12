@@ -10,9 +10,11 @@ mongoose.connection.on('connected', () => {
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
 	username: {type: String, required: true},
-	userpwd: {type: String, required: true},
-	userage: {type: Number},
-	logindate: {type: Date}
+	password: {type: String, required: true},
+	logindate: {type: Date},
+	birth: {type: Date},
+	sex: {type: String},
+	desc: {type: String}
 })
 
 const User = module.exports = mongoose.model('User', UserSchema)

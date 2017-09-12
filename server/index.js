@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.post('/api/login', (req, res) => {
-	User.find({username: req.body.username, userpwd: req.body.password}, (err, res_1) => {
+	User.find({username: req.body.username, password: req.body.password}, (err, res_1) => {
 		if(err) {
 			res.json({
 				errno: 0,
@@ -57,7 +57,7 @@ app.post('/api/register', (req, res) => {
 			// 注册
 			let user = new User({
 				username: req.body.username,
-				userpwd: req.body.password
+				password: req.body.password
 			});
 			user.save((save_err, save_res) => {
 				if (save_err) {
