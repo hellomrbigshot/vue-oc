@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const User = require('./db')
 const path = require('path')
+const common = require('./common')
 
 const app = express()
 
@@ -26,10 +27,21 @@ app.post('/api/login', (req, res) => {
 				msg: '登陆失败，用户名或密码错误'
 			})
 		} else {
-			res.json({
-				errno: 1,
-				msg: '登陆成功',
-				user_id: res_1[0]._id
+			let time = new Date().Format('yyyy-MM-dd hh:mm:ss');
+			console.log(time);
+
+			User.replace({username: req.body.username},{logintime: time}, err_2 => {
+				if(err_2) {
+					res.json({
+						errno: 0,
+						msg: msg
+					})
+				}
+				res.json({
+					errno: 1,
+					msg: '登陆成功',
+					user_id: res_1[0]._id
+				})
 			})
 		}
 	})
