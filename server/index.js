@@ -30,7 +30,7 @@ app.post('/api/login', (req, res) => {
 			let time = new Date().Format('yyyy-MM-dd hh:mm:ss');
 			console.log(time);
 
-			User.replace({username: req.body.username},{logintime: time}, err_2 => {
+			User.update({username: req.body.username},{logintime: time}, err_2 => {
 				if(err_2) {
 					res.json({
 						errno: 0,
@@ -97,7 +97,7 @@ app.post('/api/register', (req, res) => {
 // 编辑登录信息接口
 app.post('/api/updateAccountInfo', (req, res) => {
 	let update_obj = {};
-	User.find({_id: req.query.user_id}, res.body, function (err) {
+	User.update({_id: req.query.user_id}, req.body, {multi: true}, function (err) {
 		if (err) {
 			res.json({
 				errno: 0,
